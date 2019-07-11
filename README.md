@@ -12,8 +12,9 @@ Use API Manager to show features of API Platform.
 
 
 ## TODOs
-Improve systemd service script: user, permissions, etc
-
+- Improve systemd service script: user, permissions, etc
+- Create dev script on package.json with nodemon and leave start for production
+- Add service name on health response
 
 ## Requirements
 You need nodejs >10.x installed on each machine.
@@ -59,7 +60,7 @@ nohup npm start &> student.log&
 
 Test the health of the service with:
 ```
-curl -s http://PUBLIC_IP:3000/health | jq .
+curl -s http://localhost:3000/health | jq .
 ```
 
 ## Deploy services
@@ -75,19 +76,20 @@ scp -r src/student opc@<PUBLIC_IP>:/home/opc/
 scp -r src/experience opc@<PUBLIC_IP>:/home/opc/
 ```
 
+Remember to install the libraries for both services:
+```
+npm install
+```
+
 ### Open firewall port
 You must open the port you are going to use at Subnet level with `Security list`.
 - Create a Security list from your Virtual Cloud Network
-- Add Ingress rule
+- Add Ingress and Egress rules
 
-| Source    | Proto | Source port | Destination port | Allows                      |
-| --------- | ----- | ----------- | ---------------- | --------------------------- |
-| 0.0.0.0/0 | TCP   | All         | 3000             | TCP traffic for ports: 3000 |
-- Add Egress rule
-
-| Destination | Proto | Source port | Destination port | Allows                     |
-| ----------- | ----- | ----------- | ---------------- | -------------------------- |
-| 0.0.0.0/0   | TCP   | 3000        | All              | TCP traffic for ports: All |
+| Type    | CIDR            | Proto | src port | dest port | Allows                      |
+| ------- | --------------- | ----- | -------- | --------- | --------------------------- |
+| Ingress | src: 0.0.0.0/0  | TCP   | All      | 3000      | TCP traffic for ports: 3000 |
+| Egress  | dest: 0.0.0.0/0 | TCP   | 3000     | All       | TCP traffic for ports: All  |
 - Add Security list to your subnet
 
 You must add a local firewall rule in each machine like this to open the port 3000 for ingress and egress:
@@ -96,3 +98,41 @@ sudo iptables -I INPUT -p tcp --dport 3000 -m conntrack --ctstate NEW,ESTABLISHE
 
 sudo iptables -I OUTPUT -p tcp --sport 3000 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 ```
+
+### Run services as deamons
+
+Copy service file in `/etc/systemd/system`:
+```
+sudo cp student.service /etc/systemd/system
+```
+Reload daemon service to pick up the new service
+```
+sudo systemctl daemon-reload
+```
+Start the service
+```
+sudo systemctl start student
+```
+Check the status, it has to be active by now:
+```
+sudo systemctl status student
+```
+In order to see logs
+```
+journalctl -u student
+```
+
+
+The same for `experience`
+```
+sudo cp experience.service /etc/systemd/system
+
+sudo systemctl daemon-reload
+
+sudo systemctl start experience
+
+sudo systemctl status experience
+
+journalctl -u experience
+```
+
