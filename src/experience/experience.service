@@ -1,0 +1,14 @@
+[Unit]
+Description=Experience API service
+
+[Service]
+ExecStart=/home/opc/experience/start.sh
+Restart=always
+User=opc
+Group=nobody
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/opc/experience
+
+[Install]
+WantedBy=multi-user.target

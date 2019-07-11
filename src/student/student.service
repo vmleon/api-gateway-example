@@ -1,0 +1,14 @@
+[Unit]
+Description=Student API service
+
+[Service]
+ExecStart=/home/opc/student/start.sh
+Restart=always
+User=opc
+Group=nobody
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/opc/student
+
+[Install]
+WantedBy=multi-user.target
