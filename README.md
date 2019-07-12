@@ -136,3 +136,7 @@ sudo systemctl status experience
 journalctl -u experience
 ```
 
+When you are happy with the services running, don't forget to enable them so it will restart the service when reboot.
+```
+sudo systemctl enable experience
+```
