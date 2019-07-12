@@ -76,7 +76,7 @@ PUT /student
 ```
 curl -s -XPUT --header "Content-Type: application/json" --data '{"name": "Student 1 mod"}' http://<IP>:<PORT>/student/<id>
 ```
-POST /student
+DELETE /student
 ```
 curl -s -XDELETE http://<IP>:<PORT>/student/<id>
 ```
