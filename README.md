@@ -4,7 +4,7 @@ There are two API implementations under `scr`: `student` and `experience`.
 
 They are a basic nodejs applicacion serving a dummy API with CRUD operations over an in-memory array.
 
-The concept is to create to virtual machines with those implementations and merge them with and API Gateway.
+The concept is to create to virtual machines with those implementations and merge them with an API Gateway.
 
 Use API Manager to show features of API Platform.
 
@@ -61,6 +61,24 @@ nohup npm start &> student.log&
 Test the health of the service with:
 ```
 curl -s http://localhost:3000/health | jq .
+```
+
+### Test with cURL
+GET /student
+```
+curl -s http://<IP>:<PORT>/student
+```
+POST /student
+```
+curl -s -XPOST --header "Content-Type: application/json" --data '{"name": "Student 1"}' http://<IP>:<PORT>/student
+```
+PUT /student
+```
+curl -s -XPUT --header "Content-Type: application/json" --data '{"name": "Student 1 mod"}' http://<IP>:<PORT>/student/<id>
+```
+POST /student
+```
+curl -s -XDELETE http://<IP>:<PORT>/student/<id>
 ```
 
 ## Deploy services
